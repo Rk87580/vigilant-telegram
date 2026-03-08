@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rohit Kalsariya — Full Stack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Cabinet+Grotesk:wght@300;400;500;700;800&family=Jetbrains+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET & ROOT ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+
+:root{
+  --bg:#050509;
+  --bg2:#08080f;
+  --surface:#0d0d18;
+  --card:#111120;
+  --card2:#141428;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(255,255,255,0.12);
+  --accent:#00ff88;
+  --accent2:#7c3aed;
+  --accent3:#f59e0b;
+  --accent4:#06b6d4;
+  --text:#f4f4f8;
+  --muted:#4a4a6a;
+  --muted2:#8888aa;
+  --r:16px;
+  --nav-h:68px;
+}
+
+body{
+  font-family:'Cabinet Grotesk',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR ── */
+#cur{
+  position:fixed;width:10px;height:10px;
+  background:var(--accent);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:difference;
+}
+#cur-ring{
+  position:fixed;width:40px;height:40px;
+  border:1.5px solid rgba(0,255,136,0.35);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:all .13s ease;
+}
+.cur-hover #cur{width:48px;height:48px;background:var(--accent);}
+.cur-hover #cur-ring{opacity:0;}
+@media(hover:none){#cur,#cur-ring{display:none}}
+
+/* ── NOISE + BG ── */
+.noise{
+  position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.022;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px;
+}
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(140px);}
+.o1{width:800px;height:800px;background:rgba(0,255,136,.04);top:-300px;right:-200px;animation:df1 20s ease-in-out infinite;}
+.o2{width:600px;height:600px;background:rgba(124,58,237,.04);bottom:-200px;left:-150px;animation:df2 25s ease-in-out infinite;}
+.o3{width:400px;height:400px;background:rgba(6,182,212,.03);top:50%;left:45%;animation:df1 16s ease-in-out infinite reverse;}
+@keyframes df1{0%,100%{transform:translate(0,0)}33%{transform:translate(40px,-50px)}66%{transform:translate(-25px,25px)}}
+@keyframes df2{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-40px)}}
+
+.grid-dots{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:36px 36px;
+  -webkit-mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,#000 10%,transparent 75%);
+  mask-image:radial-gradient(ellipse 85% 85% at 50% 50%,#000 10%,transparent 75%);
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(1.2rem,4vw,3rem);
+  background:rgba(5,5,9,.8);
+  backdrop-filter:blur(24px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  transition:background .3s;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:.55rem;
+  font-family:'Clash Display',sans-serif;
+  font-weight:700;font-size:1rem;
+  letter-spacing:-.01em;color:var(--text);
+  text-decoration:none;
+}
+.logo-dot{
+  width:8px;height:8px;background:var(--accent);
+  border-radius:50%;box-shadow:0 0 14px var(--accent);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 8px var(--accent)}50%{box-shadow:0 0 22px var(--accent),0 0 40px rgba(0,255,136,.3)}}
+
+.nav-links{
+  display:flex;gap:2rem;list-style:none;
+}
+.nav-links a{
+  font-size:.72rem;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted2);text-decoration:none;
+  transition:color .2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:1.5px;background:var(--accent);
+  transition:width .28s ease;
+}
+.nav-links a:hover{color:var(--text);}
+.nav-links a:hover::after{width:100%;}
+
+.nav-right{display:flex;align-items:center;gap:.6rem;}
+.nav-pill{
+  display:flex;align-items:center;gap:.4rem;
+  padding:.3rem .9rem;border-radius:100px;
+  border:1px solid rgba(0,255,136,.22);
+  background:rgba(0,255,136,.05);
+  font-family:'Jetbrains Mono',monospace;
+  font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--accent);
+}
+.nav-pill .dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 1.8s ease-in-out infinite;}
+.nav-cv{
+  padding:.38rem .95rem;border-radius:8px;
+  border:1px solid rgba(0,255,136,.28);
+  background:rgba(0,255,136,.06);
+  color:var(--accent);
+  font-family:'Jetbrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;
+  text-decoration:none;display:flex;align-items:center;gap:.4rem;
+  transition:all .2s;
+}
+.nav-cv:hover{background:rgba(0,255,136,.14);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,255,136,.2);}
+.nav-icon{
+  width:36px;height:36px;border-radius:9px;
+  border:1px solid var(--border);background:rgba(255,255,255,.03);
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;color:var(--muted2);transition:all .2s;
+}
+.nav-icon:hover{border-color:var(--border2);color:var(--text);transform:translateY(-2px);}
+.nav-icon.li:hover{color:#0a66c2;border-color:rgba(10,102,194,.4);}
+.nav-icon.wa:hover{color:#25d366;border-color:rgba(37,211,102,.35);}
+
+/* hamburger */
+.hamburger{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:.4rem;
+  position:relative;z-index:600;
+}
+.hamburger span{
+  display:block;width:22px;height:1.5px;
+  background:var(--text);border-radius:2px;
+  transition:all .3s ease;transform-origin:center;
+}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+/* mobile menu */
+.mobile-menu{
+  position:fixed;inset:0;top:var(--nav-h);
+  background:rgba(5,5,9,.97);backdrop-filter:blur(30px);
+  z-index:490;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:2.5rem;
+  opacity:0;visibility:hidden;
+  transition:opacity .35s ease,visibility .35s;
+}
+.mobile-menu.open{opacity:1;visibility:visible;}
+.mobile-menu a{
+  font-family:'Clash Display',sans-serif;
+  font-size:2.2rem;font-weight:700;
+  color:var(--muted2);text-decoration:none;
+  letter-spacing:-.02em;
+  transition:color .2s,transform .2s;
+}
+.mobile-menu a:hover{color:var(--accent);transform:translateX(8px);}
+
+/* ── SECTION BASE ── */
+section{position:relative;z-index:1;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(1.2rem,4vw,3.5rem);}
+
+.sec-label{
+  font-family:'Jetbrains Mono',monospace;
+  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.6rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.sec-label::before{content:'';width:20px;height:1px;background:var(--accent);opacity:.6;}
+.sec-h{
+  font-family:'Clash Display',sans-serif;
+  font-size:clamp(2rem,5vw,3.2rem);
+  font-weight:700;letter-spacing:-.03em;
+  line-height:1.08;margin-bottom:3.5rem;
+}
+.sec-h em{font-style:normal;color:var(--accent);}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.vis{opacity:1;transform:translateY(0);}
+.reveal-l{opacity:0;transform:translateX(-28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-l.vis{opacity:1;transform:translateX(0);}
+.reveal-r{opacity:0;transform:translateX(28px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-r.vis{opacity:1;transform:translateX(0);}
+
+/* ── HERO ── */
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:calc(var(--nav-h) + 4rem) clamp(1.2rem,4vw,3.5rem) 5rem;
+  overflow:hidden;
+}
+.hero-wrap{max-width:1180px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr 0.9fr;gap:5rem;align-items:center;}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-family:'Jetbrains Mono',monospace;font-size:.62rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--accent);
+  padding:.4rem .95rem;border:1px solid rgba(0,255,136,.2);
+  border-radius:100px;background:rgba(0,255,136,.04);
+  margin-bottom:1.8rem;
+  opacity:0;animation:fadeUp .6s .1s ease forwards;
+}
+.hero-tag .ln{width:18px;height:1px;background:var(--accent);opacity:.5;}
+
+.hero-name{
+  font-family:'Clash Display',sans-serif;font-weight:700;
+  font-size:clamp(3.2rem,7vw,6rem);
+  line-height:.94;letter-spacing:-.04em;
+  margin-bottom:1.2rem;
+}
+.hero-name .n1{
+  display:block;color:var(--text);
+  overflow:hidden;white-space:nowrap;
+  width:0;animation:tyW1 .5s .5s steps(5,end) forwards;
+  position:relative;
+}
+.hero-name .n1::after{content:'▍';color:var(--accent);animation:cblink .55s step-end 1s 5;}
+.hero-name .n2{
+  display:block;
+  background:linear-gradient(120deg,var(--accent) 0%,#00d4ff 40%,var(--accent2) 80%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  overflow:hidden;white-space:nowrap;
+  width:0;animation:tyW2 .8s 1.3s steps(9,end) forwards;
+  position:relative;
+}
+.hero-name .n2::after{content:'▍';-webkit-text-fill-color:var(--accent);animation:cblink .55s step-end 2.1s 5;}
+@keyframes tyW1{to{width:5.1ch}}
+@keyframes tyW2{to{width:9.3ch}}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hero-role{
+  font-size:.95rem;font-weight:500;color:var(--muted2);
+  letter-spacing:.03em;margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp .6s 2.5s ease forwards;
+}
+.hero-role .hl{color:var(--accent);}
+
+.hero-desc{
+  font-size:1rem;font-weight:300;color:var(--muted2);
+  line-height:1.85;max-width:420px;margin-bottom:2.6rem;
+  opacity:0;animation:fadeUp .6s 2.75s ease forwards;
+}
+
+.hero-btns{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .6s 3s ease forwards;
+}
+.btn-fill{
+  padding:.82rem 1.9rem;border-radius:10px;
+  background:var(--accent);color:#050509;
+  font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:700;
+  letter-spacing:.03em;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.5rem;
+  transition:all .22s;
+  box-shadow:0 8px 30px rgba(0,255,136,.28);
+}
+.btn-fill:hover{transform:translateY(-3px);box-shadow:0 16px 45px rgba(0,255,136,.45);}
+.btn-ghost{
+  padding:.82rem 1.9rem;border-radius:10px;
+  background:transparent;color:var(--text);
+  border:1px solid var(--border2);
+  font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:600;
+  letter-spacing:.03em;text-decoration:none;
+  display:inline-flex;align-items:center;gap:.5rem;
+  transition:all .22s;
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.04);transform:translateY(-3px);}
+
+/* Terminal */
+.hero-card{
+  background:var(--card);
+  border:1px solid var(--border2);border-radius:18px;overflow:hidden;
+  box-shadow:0 40px 90px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.06);
+  opacity:0;animation:fadeUp .8s .3s ease forwards;
+  position:relative;
+}
+.hero-card::before{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:linear-gradient(135deg,rgba(0,255,136,.05) 0%,transparent 50%);
+  pointer-events:none;
+}
+.c-bar{
+  background:rgba(0,0,0,.4);border-bottom:1px solid var(--border);
+  padding:.7rem 1.1rem;display:flex;align-items:center;gap:.45rem;
+}
+.cb{width:11px;height:11px;border-radius:50%;}
+.cb-r{background:#ff5f57;}.cb-y{background:#ffbd2e;}.cb-g{background:#28c840;}
+.c-label{margin-left:.6rem;font-family:'Jetbrains Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.06em;}
+.c-body{padding:1.8rem;font-family:'Jetbrains Mono',monospace;font-size:.72rem;line-height:2.15;}
+.cl{display:block;}
+.cl .pr{color:var(--accent);}
+.cl .cm{color:#7dd3fc;}
+.cl .ke{color:var(--accent2);}
+.cl .vl{color:var(--accent);}
+.cl .st{color:var(--accent3);}
+.cl .co{color:var(--muted);}
+.bcur{display:inline-block;width:7px;height:14px;background:var(--accent);animation:pulse 1s step-end infinite;vertical-align:middle;margin-left:2px;}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── ABOUT ── */
+#about{
+  padding:8rem 0;
+  border-top:1px solid var(--border);
+}
+.about-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:5rem;align-items:start;}
+.about-text p{font-size:.95rem;font-weight:300;color:var(--muted2);line-height:1.9;margin-bottom:1.1rem;}
+.about-text strong{color:var(--text);font-weight:500;}
+.hl{color:var(--accent);font-weight:500;}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-top:2.5rem;}
+.stat-card{
+  padding:1.4rem 1rem;border-radius:14px;
+  background:var(--card);border:1px solid var(--border);
+  text-align:center;transition:all .25s;
+  position:relative;overflow:hidden;
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,255,136,.06) 0%,transparent 60%);
+  opacity:0;transition:opacity .3s;
+}
+.stat-card:hover{border-color:rgba(0,255,136,.22);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4);}
+.stat-card:hover::before{opacity:1;}
+.stat-n{font-family:'Clash Display',sans-serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1;margin-bottom:.35rem;}
+.stat-l{font-family:'Jetbrains Mono',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+
+.sk-cat{margin-bottom:1.8rem;}
+.sk-title{
+  font-family:'Jetbrains Mono',monospace;font-size:.56rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--muted);margin-bottom:.8rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.sk-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.chips{display:flex;flex-wrap:wrap;gap:.4rem;}
+.chip{
+  padding:.35rem .8rem;background:var(--card);
+  border:1px solid var(--border);border-radius:8px;
+  font-size:.72rem;font-weight:400;color:var(--muted2);
+  transition:all .18s;cursor:default;
+}
+.chip:hover{border-color:rgba(0,255,136,.3);color:var(--accent);background:rgba(0,255,136,.05);transform:translateY(-1px);}
+
+/* ── EXPERIENCE ── */
+#experience{
+  padding:8rem 0;
+  background:linear-gradient(180deg,var(--bg2) 0%,transparent 100%);
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.timeline{position:relative;}
+.timeline::before{
+  content:'';position:absolute;left:0;top:14px;bottom:50px;width:1px;
+  background:linear-gradient(to bottom,var(--accent),rgba(0,255,136,.1),transparent);
+}
+.tl-item{position:relative;padding:0 0 3.5rem 2.8rem;}
+.tl-item::before{
+  content:'';position:absolute;left:-5px;top:12px;
+  width:10px;height:10px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--muted);
+  transition:border-color .25s,box-shadow .25s,background .25s;
+}
+.tl-item:hover::before,.tl-item.act::before{border-color:var(--accent);}
+.tl-item.act::before{background:var(--accent);box-shadow:0 0 0 4px rgba(0,255,136,.12);}
+
+.tl-when{font-family:'Jetbrains Mono',monospace;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:.4rem;}
+.tl-role{font-family:'Clash Display',sans-serif;font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.2rem;}
+.tl-co{font-size:.82rem;font-weight:500;color:var(--accent4);margin-bottom:.7rem;letter-spacing:.02em;}
+.tl-txt{font-size:.82rem;font-weight:300;color:var(--muted2);line-height:1.85;max-width:560px;}
+.tl-txt strong{color:var(--text);font-weight:500;}
+.tl-badge{
+  display:inline-flex;align-items:center;gap:.4rem;margin-top:.9rem;
+  padding:.25rem .85rem;border-radius:100px;
+  background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.2);
+  font-family:'Jetbrains Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);
+}
+.tl-badge .dot{width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 1.8s ease-in-out infinite;}
+
+/* ── PROJECTS ── */
+#projects{padding:8rem 0;border-top:1px solid var(--border);}
+.proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem;}
+.proj-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;transition:all .3s;display:flex;flex-direction:column;
+  position:relative;
+}
+.proj-card::after{
+  content:'';position:absolute;inset:0;border-radius:16px;
+  background:linear-gradient(135deg,rgba(0,255,136,.055) 0%,transparent 55%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.proj-card:hover{border-color:rgba(0,255,136,.2);transform:translateY(-6px);box-shadow:0 28px 70px rgba(0,0,0,.5);}
+.proj-card:hover::after{opacity:1;}
+
+.proj-body{padding:1.8rem 1.8rem 0;flex:1;position:relative;}
+.proj-num{
+  position:absolute;top:1.4rem;right:1.8rem;
+  font-family:'Clash Display',sans-serif;font-weight:700;font-size:3.2rem;
+  color:rgba(255,255,255,.04);line-height:1;
+}
+.proj-icon{
+  width:48px;height:48px;border-radius:12px;margin-bottom:1.1rem;
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  background:rgba(255,255,255,.04);border:1px solid var(--border2);
+}
+.proj-name{font-family:'Clash Display',sans-serif;font-size:1.15rem;font-weight:700;color:var(--text);margin-bottom:.55rem;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.9rem;}
+.ptag{
+  padding:.2rem .6rem;background:rgba(0,255,136,.06);
+  border:1px solid rgba(0,255,136,.14);border-radius:5px;
+  font-family:'Jetbrains Mono',monospace;font-size:.53rem;
+  letter-spacing:.06em;color:rgba(0,255,136,.7);text-transform:uppercase;
+}
+.proj-desc{font-size:.78rem;font-weight:300;color:var(--muted2);line-height:1.8;margin-bottom:1.6rem;}
+.proj-foot{
+  padding:1.1rem 1.8rem;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.proj-link{
+  font-family:'Jetbrains Mono',monospace;font-size:.6rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--accent);text-decoration:none;
+  display:flex;align-items:center;gap:.4rem;transition:gap .2s;
+}
+.proj-link:hover{gap:.7rem;}
+.proj-link::after{content:'→';}
+.proj-type{font-family:'Jetbrains Mono',monospace;font-size:.56rem;color:var(--muted);letter-spacing:.06em;}
+
+/* ── GALLERY ── */
+#photos{
+  padding:8rem 0;
+  border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg,transparent,var(--bg2),transparent);
+}
+.photos-inner{max-width:960px;margin:0 auto;padding:0 clamp(1.2rem,4vw,3.5rem);}
+.gallery-stage{
+  position:relative;width:100%;max-width:500px;
+  margin:0 auto;height:min(580px,72vw);
+  border-radius:18px;overflow:hidden;
+  border:1px solid var(--border2);
+  background:var(--card);
+  box-shadow:0 50px 120px rgba(0,0,0,.7);
+}
+.pslide{position:absolute;inset:0;opacity:0;transform:scale(1.03);transition:opacity .65s ease,transform .65s ease;pointer-events:none;}
+.pslide.act{opacity:1;transform:scale(1);pointer-events:auto;}
+.pslide.prv{opacity:0;transform:scale(.97);}
+.pslide img{width:100%;height:100%;object-fit:contain;display:block;background:var(--card);}
+.slide-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:3.5rem 1.8rem 1.5rem;
+  background:linear-gradient(to top,rgba(5,5,9,.97),transparent);
+  opacity:0;transform:translateY(8px);transition:all .4s;
+}
+.pslide.act .slide-info{opacity:1;transform:translateY(0);}
+.slide-title{font-family:'Clash Display',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:.2rem;}
+.slide-caption{font-size:.6rem;color:rgba(255,255,255,.38);letter-spacing:.06em;}
+.slide-counter{
+  position:absolute;top:1rem;right:1rem;
+  background:rgba(5,5,9,.75);backdrop-filter:blur(12px);
+  border:1px solid var(--border2);border-radius:100px;
+  padding:.3rem .9rem;font-family:'Jetbrains Mono',monospace;
+  font-size:.58rem;letter-spacing:.1em;color:var(--accent);z-index:5;
+}
+.progress-bar{
+  position:absolute;bottom:0;left:0;height:2.5px;
+  background:linear-gradient(90deg,var(--accent),var(--accent4));z-index:5;
+  transition:width .08s linear;
+}
+.parrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:46px;height:46px;background:rgba(5,5,9,.85);
+  backdrop-filter:blur(16px);border:1px solid var(--border2);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;z-index:10;color:var(--text);font-size:.9rem;
+  transition:all .22s;user-select:none;
+}
+.parrow:hover{background:var(--accent);color:var(--bg);border-color:var(--accent);box-shadow:0 0 20px rgba(0,255,136,.4);transform:translateY(-50%) scale(1.1);}
+.pa-prev{left:-23px;}.pa-next{right:-23px;}
+
+.thumbs{display:flex;gap:.65rem;margin-top:1.2rem;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.thumbs::-webkit-scrollbar{display:none;}
+.thumb{
+  flex:0 0 calc((100% - 4*.65rem)/5);aspect-ratio:4/3;
+  border-radius:10px;overflow:hidden;
+  border:2px solid transparent;cursor:pointer;
+  transition:all .22s;background:var(--card);
+}
+.thumb:hover{border-color:rgba(0,255,136,.3);transform:translateY(-2px);}
+.thumb.act{border-color:var(--accent);box-shadow:0 0 0 1px rgba(0,255,136,.2);}
+.thumb img{width:100%;height:100%;object-fit:contain;display:block;background:var(--card);}
+.thumb-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;}
+.thumb-n{font-family:'Clash Display',sans-serif;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,.1);}
+.thumb.act .thumb-n{color:rgba(0,255,136,.4);}
+.thumb-l{font-family:'Jetbrains Mono',monospace;font-size:.42rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+.pdots{display:none;gap:.5rem;justify-content:center;margin-top:1rem;}
+.pdot{width:6px;height:6px;border-radius:50%;background:var(--border2);cursor:pointer;transition:all .22s;}
+.pdot.act{background:var(--accent);box-shadow:0 0 10px rgba(0,255,136,.5);}
+
+/* ── CONTACT ── */
+#contact{padding:8rem 0;border-top:1px solid var(--border);}
+.contact-inner{max-width:680px;margin:0 auto;}
+.contact-desc{font-size:.92rem;font-weight:300;color:var(--muted2);line-height:1.85;margin-bottom:2rem;text-align:center;}
+.contact-links{display:flex;justify-content:center;gap:.7rem;margin-bottom:2.5rem;flex-wrap:wrap;}
+.cl-btn{
+  padding:.52rem 1.15rem;border-radius:9px;font-size:.72rem;font-weight:500;
+  text-decoration:none;display:inline-flex;align-items:center;gap:.45rem;
+  transition:all .2s;border:1px solid var(--border2);color:var(--muted2);background:var(--card);
+}
+.cl-btn:hover{border-color:var(--border2);color:var(--text);transform:translateY(-2px);}
+.cl-btn.li:hover{color:#0a66c2;border-color:rgba(10,102,194,.35);background:rgba(10,102,194,.06);}
+.cl-btn.wa:hover{color:#25d366;border-color:rgba(37,211,102,.35);background:rgba(37,211,102,.06);}
+
+.cform{display:flex;flex-direction:column;gap:1rem;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.fg{display:flex;flex-direction:column;gap:.35rem;}
+.fg label{font-family:'Jetbrains Mono',monospace;font-size:.55rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);}
+.fg input,.fg textarea{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:.85rem 1rem;color:var(--text);
+  font-family:'Cabinet Grotesk',sans-serif;font-size:.88rem;font-weight:300;
+  outline:none;transition:border-color .2s,box-shadow .2s;resize:none;
+}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--muted);}
+.fg input:focus,.fg textarea:focus{border-color:rgba(0,255,136,.32);box-shadow:0 0 0 3px rgba(0,255,136,.07);}
+.fg textarea{min-height:130px;}
+.fsubmit{display:flex;justify-content:center;gap:1rem;margin-top:.6rem;flex-wrap:wrap;}
+.btn-send{
+  padding:.85rem 2.2rem;background:var(--accent);color:var(--bg);
+  border:none;border-radius:10px;
+  font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.03em;
+  cursor:pointer;transition:all .22s;
+  box-shadow:0 8px 30px rgba(0,255,136,.28);
+}
+.btn-send:hover{transform:translateY(-3px);box-shadow:0 16px 45px rgba(0,255,136,.45);}
+.btn-call{
+  padding:.85rem 1.9rem;background:rgba(124,58,237,.08);color:var(--accent2);
+  border:1px solid rgba(124,58,237,.28);border-radius:10px;
+  font-family:'Clash Display',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.03em;
+  cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;
+  transition:all .22s;
+}
+.btn-call:hover{background:rgba(124,58,237,.16);transform:translateY(-3px);box-shadow:0 8px 25px rgba(124,58,237,.25);}
+
+/* ── FOOTER ── */
+footer{
+  padding:2rem clamp(1.2rem,4vw,3.5rem);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem;
+  font-family:'Jetbrains Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.08em;
+  position:relative;z-index:1;
+}
+footer a{color:var(--accent);text-decoration:none;transition:opacity .2s;}
+footer a:hover{opacity:.7;}
+
+/* ── SCROLL INDICATOR ── */
+.scroll-ind{
+  position:fixed;bottom:2rem;right:2rem;z-index:100;
+  display:flex;flex-direction:column;align-items:center;gap:.35rem;
+  opacity:1;transition:opacity .4s;
+}
+.scroll-ind.hidden{opacity:0;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,var(--accent),transparent);}
+.scroll-text{font-family:'Jetbrains Mono',monospace;font-size:.48rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;writing-mode:vertical-rl;}
+
+/* ── SECTION DIVIDER ── */
+.divider{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border2),transparent);
+}
+
+/* ── MOBILE RESPONSIVE ── */
+@media(max-width:1100px){
+  .hero-wrap{grid-template-columns:1fr;gap:3rem;}
+  .hero-card{display:none;}
+  .about-grid{grid-template-columns:1fr;gap:3rem;}
+  .proj-grid{grid-template-columns:1fr;}
+}
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .nav-pill{display:none;}
+  .scroll-ind{display:none;}
+}
+@media(max-width:640px){
+  #hero{padding-top:calc(var(--nav-h) + 2.5rem);padding-bottom:3rem;}
+  .hero-name{font-size:clamp(2.8rem,12vw,4rem);}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .frow{grid-template-columns:1fr;}
+  .contact-links{gap:.5rem;}
+  .parrow{width:38px;height:38px;}
+  .pa-prev{left:8px;}.pa-next{right:8px;}
+  .thumbs{display:none;}.pdots{display:flex;}
+  #about,#projects,#contact,#experience,#photos{padding:5rem 0;}
+  .sec-h{margin-bottom:2.5rem;}
+  .tl-item{padding:0 0 2.5rem 2.2rem;}
+  footer{flex-direction:column;text-align:center;}
+}
+@media(max-width:400px){
+  .hero-name{font-size:clamp(2.2rem,10vw,3rem);}
+  .stats-row{grid-template-columns:1fr;}
+  .hero-btns{flex-direction:column;align-items:flex-start;}
+  .btn-fill,.btn-ghost{width:100%;justify-content:center;}
+}
+
+/* ── SCROLL PROGRESS ── */
+#progress-line{
+  position:fixed;top:0;left:0;height:2px;z-index:999;
+  background:linear-gradient(90deg,var(--accent),var(--accent4));
+  width:0%;transition:width .1s linear;
+}
+</style>
+</head>
+<body>
+
+<!-- BG layers -->
+<div class="noise"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+<div class="grid-dots"></div>
+
+<!-- Progress line -->
+<div id="progress-line"></div>
+
+<!-- Cursor -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- Scroll indicator -->
+<div class="scroll-ind" id="scrollInd">
+  <div class="scroll-text">Scroll</div>
+  <div class="scroll-line"></div>
+</div>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="#hero"><div class="logo-dot"></div>Rohit Kalsariya</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#photos">Gallery</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="https://drive.google.com/file/d/1idJ7WZcAjUnooxpRAmeOJBcYceTRdD0a/view" target="_blank" class="nav-cv">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      CV
+    </a>
+    <a href="https://www.linkedin.com/in/rohit-kalsariya-5a4438263/" target="_blank" class="nav-icon li" title="LinkedIn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+    <a href="https://wa.me/91382293898" target="_blank" class="nav-icon wa" title="WhatsApp">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+    </a>
+    <div class="nav-pill"><div class="dot"></div>Open to Work</div>
+    <button class="hamburger" id="burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" class="mm-link">About</a>
+  <a href="#photos" class="mm-link">Gallery</a>
+  <a href="#experience" class="mm-link">Experience</a>
+  <a href="#projects" class="mm-link">Projects</a>
+  <a href="#contact" class="mm-link">Contact</a>
+</div>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="hero-wrap">
+    <div>
+      <div class="hero-tag"><div class="ln"></div>Full Stack Developer · Gujarat, India</div>
+      <h1 class="hero-name">
+        <span class="n1">Rohit</span>
+        <span class="n2">Kalsariya</span>
+      </h1>
+      <div class="hero-role">Python · JavaScript · React · Java  · <span class="hl">Odoo</span></div>
+      <p class="hero-desc">Building enterprise-grade web applications and modern digital systems - from Gujarat, India to the world.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-fill">View Projects →</a>
+        <a href="#contact" class="btn-ghost">Get In Touch</a>
+      </div>
+    </div>
+    <div>
+      <div class="hero-card">
+        <div class="c-bar">
+          <div class="cb cb-r"></div><div class="cb cb-y"></div><div class="cb cb-g"></div>
+          <span class="c-label">rohit@dev — developer.json</span>
+        </div>
+        <div class="c-body">
+          <span class="cl"><span class="pr">$</span> <span class="cm">cat developer.json</span></span>
+          <span class="cl"><span class="co">{</span></span>
+          <span class="cl">&nbsp;&nbsp;<span class="ke">"name"</span>: <span class="st">"Rohit Kalsariya"</span>,</span>
+          <span class="cl">&nbsp;&nbsp;<span class="ke">"role"</span>: <span class="st">"Full Stack Developer"</span>,</span>
+          <span class="cl">&nbsp;&nbsp;<span class="ke">"location"</span>: <span class="st">"Gujarat, India"</span>,</span>
+          <span class="cl">&nbsp;&nbsp;<span class="ke">"current"</span>: <span class="st">"Odoo — POS Team"</span>,</span>
+          <span class="cl">&nbsp;&nbsp;<span class="ke">"stack"</span>: [<span class="st">"Java"</span>, <span class="st">"Angular"</span>, <span class="st">"React"</span>],</span>
+          <span class="cl">&nbsp;&nbsp;<span class="ke">"openToWork"</span>: <span class="vl">true</span></span>
+          <span class="cl"><span class="co">}</span></span>
+          <span class="cl"><span class="pr">$</span> <span class="bcur"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-label">About</div>
+    <h2 class="sec-h reveal">The Story Behind <em>The Code</em></h2>
+    <div class="about-grid">
+      <div class="reveal-l">
+        <div class="about-text">
+          <p>I'm <strong>Rohit Kalsariya</strong> from <span class="hl">Junagadh, Gujarat, Born in 2004</span>. Pursuing a BTech in Computer Software Engineering at <strong>Birla Vishvakarma Mahavidyalaya</strong> (2021–2025).</p>
+          
+          <p>My coursework spans software development, OOP, web development, operating systems, and machine learning. I completed my Higher Secondary education from <strong>Alpha Vidhya Sankul</strong> in Mathematics &amp; Computer Science, achieving an outstanding <strong>99.94 Percentile Rank</strong> and securing <strong>6th rank in Gujarat</strong>.</p>
+          
+          <p>Currently a <strong>Software Developer at Odoo</strong> — working on the POS team and leading the <span class="hl">Norway fiscal certification</span> for Odoo POS and major improvements using modern web technologies.</p>
+        
+          <p>Outside of work, I enjoy <strong>exploring nature, gaming, and watching movies</strong>, which help me relax and stay creatively inspired.</p>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-n">97%</div><div class="stat-l">HSC Score</div></div>
+          <div class="stat-card"><div class="stat-n">10+</div><div class="stat-l">Projects</div></div>
+          <div class="stat-card"><div class="stat-n">3+</div><div class="stat-l">Companies</div></div>
+        </div>
+      </div>
+      <div class="reveal-r">
+        <div class="sk-cat">
+          <div class="sk-title">Frontend</div>
+          <div class="chips"><div class="chip">Angular</div><div class="chip">React</div><div class="chip">HTML</div><div class="chip">CSS</div><div class="chip">JavaScript</div></div>
+        </div>
+        <div class="sk-cat">
+          <div class="sk-title">Backend</div>
+          <div class="chips"><div class="chip">Java</div><div class="chip">Spring Boot</div><div class="chip">Spring MVC</div><div class="chip">Hibernate</div><div class="chip">Node.js</div><div class="chip">JSP/JSF</div></div>
+        </div>
+        <div class="sk-cat">
+          <div class="sk-title">Database &amp; Tools</div>
+          <div class="chips"><div class="chip">MySQL</div><div class="chip">MongoDB</div><div class="chip">Git</div><div class="chip">Linux</div><div class="chip">Postman</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── GALLERY ── -->
+<section id="photos">
+  <div class="photos-inner">
+    <div class="sec-label">Gallery</div>
+    <div style="position:relative;" class="reveal">
+      <div class="gallery-stage" id="stage">
+        <div class="pslide act"><img src="images/rohit1.jpg" alt="Rohit Photo 1"><div class="slide-info"><div class="slide-title">Photo 01</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit2.jpg" alt="Rohit Photo 2"><div class="slide-info"><div class="slide-title">Photo 02</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit3.jpg" alt="Rohit Photo 3"><div class="slide-info"><div class="slide-title">Photo 03</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit4.jpg" alt="Rohit Photo 4"><div class="slide-info"><div class="slide-title">Photo 04</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit5.jpg" alt="Rohit Photo 5"><div class="slide-info"><div class="slide-title">Photo 05</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit6.jpg" alt="Rohit Photo 6"><div class="slide-info"><div class="slide-title">Photo 06</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit7.jpg" alt="Rohit Photo 7"><div class="slide-info"><div class="slide-title">Photo 07</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit8.jpg" alt="Rohit Photo 8"><div class="slide-info"><div class="slide-title">Photo 08</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit9.jpg" alt="Rohit Photo 9"><div class="slide-info"><div class="slide-title">Photo 09</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="pslide"><img src="images/rohit10.jpg" alt="Rohit Photo 10"><div class="slide-info"><div class="slide-title">Photo 10</div><div class="slide-caption">Rohit Kalsariya</div></div></div>
+        <div class="slide-counter" id="pCount">01 / 10</div>
+        <div class="progress-bar" id="pBar"></div>
+        <div class="parrow pa-prev" id="pPrev">←</div>
+        <div class="parrow pa-next" id="pNext">→</div>
+      </div>
+      <div class="thumbs" id="pThumbs"></div>
+      <div class="pdots" id="pDots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── EXPERIENCE ── -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-label">Experience</div>
+    <h2 class="sec-h reveal">Where I've <em>Worked</em></h2>
+    <div class="timeline">
+      <div class="tl-item act reveal">
+        <div class="tl-when">July 2025 – Present</div>
+        <div class="tl-role">Software Developer</div>
+        <div class="tl-co">Odoo</div>
+        <div class="tl-txt">Working on multiple Odoo project improvements as part of the <strong>Point of Sale (POS) team</strong>. Leading the <strong>Norway Certification for Odoo POS</strong> — ensuring the module meets Norwegian regulatory and fiscal compliance standards.</div>
+        <div class="tl-badge"><div class="dot"></div>Active Deployment</div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-when">June 2024 – July 2024</div>
+        <div class="tl-role">Android Developer Intern</div>
+        <div class="tl-co">Prodigy InfoTech</div>
+        <div class="tl-txt">Engaged in Android development, contributing to app development and enhancement within a professional environment.</div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-when">June 2023 – July 2023</div>
+        <div class="tl-role">Web Developer Intern</div>
+        <div class="tl-co">TechnoGuide Infosoft Pvt. Ltd.</div>
+        <div class="tl-txt">Focused on web development tasks remotely from Gujarat. Contributed to feature development and maintenance of web applications.</div>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-when">May 2019 – May 2021</div>
+        <div class="tl-role">Team Leader</div>
+        <div class="tl-co">Alpha Vidhya Sankul</div>
+        <div class="tl-txt">Led a team on-site in Gujarat, fostering team spirit and guiding effectively. Enhanced leadership and project management skills.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-label">Projects</div>
+    <h2 class="sec-h reveal">Things I've <em>Built</em></h2>
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-body">
+          <div class="proj-num">01</div>
+          <div class="proj-icon">🚗</div>
+          <div class="proj-name">Car Rental System</div>
+          <div class="proj-tags"><span class="ptag">Angular</span><span class="ptag">Spring Boot</span><span class="ptag">MySQL</span></div>
+          <div class="proj-desc">Full-stack rental platform. Admins manage car listings and bookings. Customers browse and book with advanced search and streamlined UX.</div>
+        </div>
+        <div class="proj-foot">
+          <a href="https://github.com/Rk87580" class="proj-link">Source Code</a>
+          <span class="proj-type">Full Stack</span>
+        </div>
+      </div>
+      <div class="proj-card reveal">
+        <div class="proj-body">
+          <div class="proj-num">02</div>
+          <div class="proj-icon">🏦</div>
+          <div class="proj-name">QuickPay</div>
+          <div class="proj-tags"><span class="ptag">JSP</span><span class="ptag">Spring Boot</span><span class="ptag">Spring Security</span></div>
+          <div class="proj-desc">Banking solution for managing customer accounts. Full deposit &amp; withdrawal operations with Spring Security authentication.</div>
+        </div>
+        <div class="proj-foot">
+          <a href="https://github.com/Rk87580" class="proj-link">Source Code</a>
+          <span class="proj-type">Banking</span>
+        </div>
+      </div>
+      <div class="proj-card reveal">
+        <div class="proj-body">
+          <div class="proj-num">03</div>
+          <div class="proj-icon">🎵</div>
+          <div class="proj-name">Spotify Clone</div>
+          <div class="proj-tags"><span class="ptag">HTML</span><span class="ptag">CSS</span><span class="ptag">JavaScript</span></div>
+          <div class="proj-desc">Fully responsive music player. Play albums, control seek bar, navigate playlists, view song durations — works across all devices.</div>
+        </div>
+        <div class="proj-foot">
+          <a href="https://github.com/Rk87580" class="proj-link">Source Code</a>
+          <span class="proj-type">Frontend</span>
+        </div>
+      </div>
+      <div class="proj-card reveal">
+        <div class="proj-body">
+          <div class="proj-num">04</div>
+          <div class="proj-icon">🧠</div>
+          <div class="proj-name">Programming Quiz</div>
+          <div class="proj-tags"><span class="ptag">PHP</span><span class="ptag">JavaScript</span><span class="ptag">MySQL</span></div>
+          <div class="proj-desc">Interactive quiz platform with student &amp; teacher login. Timed quizzes, scoreboards, multiple question types, responsive for all devices.</div>
+        </div>
+        <div class="proj-foot">
+          <a href="https://github.com/Rk87580" class="proj-link">Source Code</a>
+          <span class="proj-type">Full Stack</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="wrap">
+    <div style="text-align:center;"><div class="sec-label" style="justify-content:center;">Contact</div>
+    <h2 class="sec-h reveal" style="margin-bottom:0;">Let's <em>Connect</em></h2></div>
+    <div class="contact-inner">
+      <p class="contact-desc reveal">Open to new opportunities, collaborations, and interesting projects. Drop a message and I'll get back to you soon.</p>
+      <div class="contact-links reveal">
+        <a href="https://www.linkedin.com/in/rohit-kalsariya-5a4438263/" target="_blank" class="cl-btn li">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn
+        </a>
+        <a href="https://wa.me/91382293898" target="_blank" class="cl-btn wa">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>WhatsApp
+        </a>
+        <a href="https://drive.google.com/file/d/1idJ7WZcAjUnooxpRAmeOJBcYceTRdD0a/view" target="_blank" class="cl-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>View CV
+        </a>
+      </div>
+      <form class="cform reveal" id="cForm" onsubmit="return false;">
+        <div class="frow">
+          <div class="fg"><label>Name</label><input type="text" id="cName" placeholder="Your Name"/></div>
+          <div class="fg"><label>Email</label><input type="email" id="cEmail" placeholder="you@email.com"/></div>
+        </div>
+        <div class="fg"><label>Phone</label><input type="tel" id="cPhone" placeholder="+91 00000 00000"/></div>
+        <div class="fg"><label>Message</label><textarea id="cMsg" placeholder="What's on your mind?"></textarea></div>
+        <div class="fsubmit">
+          <button type="submit" class="btn-send" id="sendBtn">Send Message →</button>
+          <a href="tel:+91XXXXXXXXXX" id="callBtn" class="btn-call">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.58 3.44 2 2 0 0 1 3.54 1.25h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.81a16 16 0 0 0 6.29 6.29l1.83-1.83a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>Call Me
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>© 2025 Rohit Kalsariya · Built with passion in Gujarat, India</span>
+  <span>Full Stack Developer · <a href="#hero">↑ Back to top</a></span>
+</footer>
+
+<script>
+// ── CURSOR (desktop only) ──
+if(window.matchMedia('(hover:hover)').matches){
+  const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+  (function a(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+  document.querySelectorAll('a,button,.proj-card,.chip,.stat-card,.thumb,.parrow').forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));
+  });
+}
+
+// ── HAMBURGER ──
+const burger=document.getElementById('burger'),menu=document.getElementById('mobileMenu');
+burger.addEventListener('click',()=>{
+  burger.classList.toggle('open');
+  menu.classList.toggle('open');
+  document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
+});
+document.querySelectorAll('.mm-link').forEach(l=>l.addEventListener('click',()=>{
+  burger.classList.remove('open');menu.classList.remove('open');document.body.style.overflow='';
+}));
+
+// ── SCROLL PROGRESS ──
+const progLine=document.getElementById('progress-line');
+window.addEventListener('scroll',()=>{
+  const pct=window.scrollY/(document.documentElement.scrollHeight-window.innerHeight)*100;
+  progLine.style.width=pct+'%';
+  document.getElementById('scrollInd').classList.toggle('hidden',window.scrollY>200);
+},{ passive:true });
+
+// ── REVEAL ON SCROLL ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('vis'),i*70);});
+},{threshold:.1});
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>obs.observe(el));
+
+// ── CONTACT ──
+document.getElementById('sendBtn').addEventListener('click',()=>{
+  const name=document.getElementById('cName').value.trim();
+  const email=document.getElementById('cEmail').value.trim();
+  const phone=document.getElementById('cPhone').value.trim();
+  const msg=document.getElementById('cMsg').value.trim();
+  if(!name||!msg){alert('Please enter your name and message.');return;}
+  const sub=encodeURIComponent('Portfolio Contact from '+name);
+  const body=encodeURIComponent('Name: '+name+'\nEmail: '+(email||'Not provided')+'\nPhone: '+(phone||'Not provided')+'\n\nMessage:\n'+msg);
+  window.location.href='mailto:kas@mail.com?subject='+sub+'&body='+body;
+});
+
+// ── GALLERY SLIDER ──
+(function(){
+  const slides=document.querySelectorAll('.pslide');
+  const count=document.getElementById('pCount');
+  const bar=document.getElementById('pBar');
+  const thumbsEl=document.getElementById('pThumbs');
+  const dotsEl=document.getElementById('pDots');
+  let cur=0,timer=null,elapsed=0;
+  const DELAY=4500;
+
+  // build thumbs + dots
+  slides.forEach((s,i)=>{
+    const img=s.querySelector('img');
+    const th=document.createElement('div');th.className='thumb'+(i===0?' act':'');
+    th.innerHTML=`<div class="thumb-ph"><div class="thumb-n">${String(i+1).padStart(2,'0')}</div><div class="thumb-l">Photo</div></div>`;
+    if(img){const ti=document.createElement('img');ti.src=img.src;ti.alt=img.alt;ti.onload=()=>th.innerHTML='';if(ti.complete&&ti.naturalWidth)th.innerHTML='';th.appendChild(ti);try{th.querySelector('img');}catch(e){}}
+    th.addEventListener('click',()=>goTo(i));thumbsEl.appendChild(th);
+    const d=document.createElement('div');d.className='pdot'+(i===0?' act':'');
+    d.addEventListener('click',()=>goTo(i));dotsEl.appendChild(d);
+  });
+
+  function goTo(idx){
+    const sy=window.scrollY;
+    slides[cur].classList.remove('act');slides[cur].classList.add('prv');
+    const old=cur;cur=(idx+slides.length)%slides.length;
+    slides[cur].classList.add('act');
+    setTimeout(()=>slides[old].classList.remove('prv'),700);
+    count.textContent=`${String(cur+1).padStart(2,'0')} / ${String(slides.length).padStart(2,'0')}`;
+    document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('act',i===cur));
+    document.querySelectorAll('.pdot').forEach((d,i)=>d.classList.toggle('act',i===cur));
+    thumbsEl.children[cur]?.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});
+    requestAnimationFrame(()=>window.scrollTo({top:sy,behavior:'instant'}));
+    resetAuto();
+  }
+  document.getElementById('pNext').addEventListener('click',()=>goTo(cur+1));
+  document.getElementById('pPrev').addEventListener('click',()=>goTo(cur-1));
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'){e.preventDefault();goTo(cur+1);}if(e.key==='ArrowLeft'){e.preventDefault();goTo(cur-1);}});
+  let tx=0;
+  document.getElementById('stage').addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+  document.getElementById('stage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>40)goTo(dx<0?cur+1:cur-1);});
+  function startAuto(){elapsed=0;clearInterval(timer);timer=setInterval(()=>{elapsed+=50;bar.style.width=(elapsed/DELAY*100)+'%';if(elapsed>=DELAY){goTo(cur+1);elapsed=0;}},50);}
+  function resetAuto(){clearInterval(timer);startAuto();}
+  document.getElementById('stage').addEventListener('mouseenter',()=>clearInterval(timer));
+  document.getElementById('stage').addEventListener('mouseleave',startAuto);
+  startAuto();
+})();
+
+// ── COUNTER ANIMATION ──
+function animateCounter(el,target,suffix=''){
+  let start=0,dur=1500,step=dur/60;
+  let inc=target/60;
+  const timer=setInterval(()=>{
+    start=Math.min(start+inc,target);
+    el.textContent=Math.round(start)+(suffix||'');
+    if(start>=target)clearInterval(timer);
+  },step);
+}
+const statObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const n=e.target.querySelector('.stat-n');
+      if(!n||n.dataset.animated)return;
+      n.dataset.animated='1';
+      const txt=n.textContent;
+      const num=parseInt(txt);const suf=txt.replace(/[0-9]/g,'');
+      animateCounter(n,num,suf);
+    }
+  });
+},{threshold:.5});
+document.querySelectorAll('.stat-card').forEach(c=>statObs.observe(c));
+</script>
+</body>
+</html>
